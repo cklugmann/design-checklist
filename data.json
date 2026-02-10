@@ -4,157 +4,182 @@
       "id": "primitive_stimulus",
       "title": "Stimulus",
       "summary": "The media shown to an annotator (image or video), optionally with overlays.",
-      "body": "A **Stimulus** is the evidence presented to an annotator: an image, a video clip, or a sequence of frames. It may include overlays (e.g., bounding boxes, masks, timestamps) to reduce search and ambiguity.\n\n**Why it matters**: Nano-tasks must be answerable using only the stimulus (no outside knowledge).\n\nSee also: [[primitive_focus_spec]], [[primitive_ui_affordance]]."
+      "body": "A **Stimulus** is the evidence presented to an annotator: an image, a video clip, or a sequence of frames. It may include overlays (e.g., bounding boxes, masks, timestamps) to reduce search and ambiguity.\n\n**Why it matters**: Nano-tasks must be answerable using only the stimulus (no outside knowledge).\n\nSee also: [[primitive_focus_spec]], [[primitive_ui_affordance]], [[concept_observability]], [[concept_ambiguity_reduction]]."
     },
+
     "primitive_focus_spec": {
       "id": "primitive_focus_spec",
       "title": "Focus Spec",
       "summary": "A precise specification of *what* the question is about (object/region/time).",
-      "body": "A **Focus Spec** identifies the target for the question:\n- **Object focus**: a marked object (e.g., bounding box / mask)\n- **Region focus**: a spatial area (e.g., left lane)\n- **Temporal focus**: a time range or specific frame(s)\n- **Whole-scene focus**: the entire view\n\nIf a question can be interpreted as applying to multiple objects, a focus spec is required to make it decidable.\n\nSee also: [[concept_reference_target]], [[primitive_stimulus]]."
+      "body": "A **Focus Spec** identifies the target for the question:\n- **Object focus**: a marked object (e.g., bounding box / mask)\n- **Region focus**: a spatial area (e.g., left lane)\n- **Temporal focus**: a time range or specific frame(s)\n- **Whole-scene focus**: the entire view\n\nIf a question can be interpreted as applying to multiple objects, a focus spec is required to make it decidable.\n\nSee also: [[concept_reference_target]], [[primitive_stimulus]], [[concept_ambiguity_reduction]]."
     },
+
     "primitive_predicate": {
       "id": "primitive_predicate",
       "title": "Predicate",
       "summary": "The property being judged (ideally directly observable).",
-      "body": "A **Predicate** is the proposition being evaluated, e.g., “Visibility is limited by fog.” A good nano-task predicate is:\n- **Directly observable** or grounded in a clearly-defined observable proxy\n- **Non-intentional** (not about goals, purpose, or hidden mental states)\n- **Single-aspect** (not a conjunction)\n\nSee also: [[concept_observability]], [[concept_proxy_observable]], [[concept_single_aspect]]."
+      "body": "A **Predicate** is the proposition being evaluated, e.g., “Visibility is limited by fog.” A good nano-task predicate is:\n- **Directly observable** or grounded in a clearly-defined observable proxy\n- **Non-intentional** (not about goals, purpose, or hidden mental states)\n- **Single-aspect** (not a conjunction)\n\nIf the predicate is graded (dense, severe, heavy), it usually requires an explicit [[concept_threshold]].\n\nSee also: [[concept_observability]], [[concept_proxy_observable]], [[concept_single_aspect]], [[concept_threshold]]."
     },
+
     "primitive_answer_schema": {
       "id": "primitive_answer_schema",
       "title": "Answer Schema",
       "summary": "The fixed set of allowed answers and their definitions.",
-      "body": "An **Answer Schema** defines:\n- Allowed options (e.g., Yes/No/Not sure)\n- Per-option definitions\n- Constraints: **mutual exclusivity** and **exhaustiveness**\n\nA nano-task answer schema must minimize overlap and ambiguity.\n\nSee also: [[concept_mutual_exclusivity]], [[concept_exhaustiveness]], [[concept_cant_solve]]."
+      "body": "An **Answer Schema** defines:\n- Allowed options (e.g., Yes/No/Not sure)\n- Per-option definitions\n- Constraints: **mutual exclusivity** and **exhaustiveness**\n\nA nano-task answer schema must minimize overlap and ambiguity.\n\nSee also: [[concept_mutual_exclusivity]], [[concept_exhaustiveness]], [[concept_cant_solve]], [[concept_threshold]]."
     },
+
     "primitive_aggregation": {
       "id": "primitive_aggregation",
       "title": "Aggregation",
       "summary": "How repeated annotations are combined into a final result.",
-      "body": "**Aggregation** describes how multiple repeats are combined (e.g., majority vote, weighted vote, posterior confidence). It also includes stop rules (e.g., stop when confidence is high enough).\n\nFor routing trees, aggregation quality is especially important, because early errors propagate.\n\nSee also: [[concept_repeats]], [[concept_stop_rule]], [[concept_routing_node]]."
+      "body": "**Aggregation** describes how multiple repeats are combined (e.g., majority vote, weighted vote, posterior confidence). It also includes stop rules (e.g., stop when confidence is high enough).\n\nIn current tooling (HARI), routing is typically based on **majority vote**. Therefore, the design quality of routing nodes is a primary lever for reducing downstream error propagation.\n\nSee also: [[concept_repeats]], [[concept_stop_rule]], [[concept_routing_node]], [[concept_ambiguity]]."
     },
+
     "concept_nano_task": {
       "id": "concept_nano_task",
       "title": "Nano-task",
       "summary": "A minimal, low-cognitive-load annotation decision that is decidable from the stimulus.",
-      "body": "A **Nano-task** is a small, well-defined decision problem presented to an annotator. It is characterized by:\n- **Decidability**: answerable from the [[primitive_stimulus]] alone\n- **Low cognitive load**: minimal searching, minimal reading, minimal interpretation\n- **Single-aspect** predicate ([[concept_single_aspect]])\n- High expected agreement (validated via [[concept_pilot]])\n\nA nano-task is not defined by “short wording”, but by formal properties that reduce ambiguity and training needs.\n\nSee also: [[concept_fail_fast]], [[concept_tree_dag]]."
+      "body": "A **Nano-task** is a small, well-defined decision problem presented to an annotator. It is characterized by:\n- **Decidability**: answerable from the [[primitive_stimulus]] alone\n- **Low cognitive load**: minimal searching, minimal reading, minimal interpretation\n- **Single-aspect** predicate ([[concept_single_aspect]])\n- High expected agreement (validated via [[concept_pilot]])\n\nA nano-task is not defined by “short wording”, but by formal properties that reduce ambiguity and training needs.\n\nSee also: [[concept_fail_fast]], [[concept_tree_dag]], [[concept_downstream_intent]], [[concept_ambiguity]]."
     },
+
     "concept_fail_fast": {
       "id": "concept_fail_fast",
       "title": "Fail-fast checklist",
       "summary": "A set of early checks that disqualify or improve a task before spending annotator time.",
-      "body": "A **Fail-fast checklist** is a deterministic evaluation process for a candidate task. It aims to:\n- Catch disqualifiers early\n- Suggest concrete fixes (operators)\n- Reduce subjectivity\n\nSee also: [[concept_fix_operator]], [[concept_pilot]]."
+      "body": "A **Fail-fast checklist** is a deterministic evaluation process for a candidate task. It aims to:\n- Catch disqualifiers early\n- Suggest concrete fixes (operators)\n- Reduce subjectivity\n\nThe checklist should explicitly separate **avoidable ambiguity** (design-induced) from **irreducible ambiguity** (aleatoric).\n\nSee also: [[concept_fix_operator]], [[concept_pilot]], [[concept_ambiguity]], [[concept_ambiguity_reduction]]."
     },
+
     "concept_single_aspect": {
       "id": "concept_single_aspect",
       "title": "Single-aspect constraint",
       "summary": "A nano-task should ask about exactly one aspect at a time.",
-      "body": "The **single-aspect constraint** means a question must evaluate one predicate only. Conjunctions (A AND B) or multi-part questions tend to reduce agreement.\n\nCommon fix: [[op_and_split]]."
+      "body": "The **single-aspect constraint** means a question must evaluate one predicate only. Conjunctions (A AND B) or multi-part questions tend to reduce agreement.\n\nCommon fix: [[op_and_split]].\n\nSee also: [[concept_ambiguity_reduction]]."
     },
+
     "concept_observability": {
       "id": "concept_observability",
       "title": "Observability",
       "summary": "Whether the predicate can be judged directly from the stimulus without inference about intent/purpose.",
-      "body": "**Observability** is the degree to which an annotator can answer using what is visible/audible in the stimulus.\n\nNon-observable: intent, purpose, what someone *should* do.\n\nFix: convert to an [[concept_proxy_observable]] predicate, or mark as non-nano."
+      "body": "**Observability** is the degree to which an annotator can answer using what is visible/audible in the stimulus.\n\nNon-observable: intent, purpose, what someone *should* do.\n\nFix: convert to an [[concept_proxy_observable]] predicate, or mark as non-nano.\n\nSee also: [[concept_ambiguity_reduction]]."
     },
+
     "concept_proxy_observable": {
       "id": "concept_proxy_observable",
       "title": "Observable proxy",
       "summary": "A directly observable feature used to approximate a harder concept.",
-      "body": "An **observable proxy** replaces an abstract or inferred concept with something the annotator can see.\n\nExample:\n- Instead of “Is the vehicle braking?”, ask “Are the brake lights on?”\n\nCommon fix: [[op_proxy_observable]]."
+      "body": "An **observable proxy** replaces an abstract or inferred concept with something the annotator can see.\n\nExample:\n- Instead of “Is the vehicle braking?”, ask “Are the brake lights on?”\n\nCommon fix: [[op_proxy_observable]].\n\nSee also: [[concept_threshold]]."
     },
+
     "concept_reference_target": {
       "id": "concept_reference_target",
       "title": "Reference target",
       "summary": "The specific entity (object/region/time) the question refers to.",
-      "body": "A **reference target** is what the question applies to: a marked object, a region of the scene, or a time segment.\n\nIf multiple targets are plausible, the task is ambiguous.\n\nFix: [[op_add_focus_spec]]."
+      "body": "A **reference target** is what the question applies to: a marked object, a region of the scene, or a time segment.\n\nIf multiple targets are plausible, the task is ambiguous.\n\nFix: [[op_add_focus_spec]].\n\nSee also: [[concept_ambiguity_reduction]]."
     },
+
     "concept_jargon": {
       "id": "concept_jargon",
       "title": "Jargon",
       "summary": "Terms that require specialized knowledge or training to interpret correctly.",
-      "body": "**Jargon** includes domain-specific terms that annotators may not share.\n\nA nano-task should either avoid jargon or define it with examples.\n\nFix: [[op_define_concept]] and add examples."
+      "body": "**Jargon** includes domain-specific terms that annotators may not share.\n\nA nano-task should either avoid jargon or define it with examples.\n\nFix: [[op_define_concept]] and add examples.\n\nSee also: [[op_add_anchor_examples]], [[op_add_counterexamples]]."
     },
+
     "concept_mutual_exclusivity": {
       "id": "concept_mutual_exclusivity",
       "title": "Mutual exclusivity",
       "summary": "Answer options must not overlap.",
-      "body": "**Mutual exclusivity** means an example cannot reasonably belong to two options at once.\n\nIf options overlap, agreement drops.\n\nFix: [[op_make_thresholds_explicit]] or simplify options."
+      "body": "**Mutual exclusivity** means an example cannot reasonably belong to two options at once.\n\nIf options overlap, agreement drops.\n\nFix: [[op_make_thresholds_explicit]] or simplify options.\n\nSee also: [[concept_threshold]]."
     },
+
     "concept_exhaustiveness": {
       "id": "concept_exhaustiveness",
       "title": "Exhaustiveness",
       "summary": "Answer options must cover all plausible cases.",
       "body": "**Exhaustiveness** means every stimulus should map to some answer.\n\nIf edge cases exist, add a controlled fallback such as [[concept_cant_solve]]."
     },
+
     "concept_cant_solve": {
       "id": "concept_cant_solve",
       "title": "\"Not sure / Can't solve\" option",
       "summary": "A controlled fallback for ambiguous or unanswerable cases.",
-      "body": "A **Not sure / Can't solve** option captures cases where the stimulus does not support a reliable answer.\n\nIt prevents forced guessing and helps quantify uncertainty.\n\nFix operator: [[op_add_cant_solve]]."
+      "body": "A **Not sure / Can't solve** option captures cases where the stimulus does not support a reliable answer.\n\nIt prevents forced guessing and helps quantify uncertainty.\n\nIn ambiguity measurement practice, this option contributes an explicit uncertainty signal alongside entropy from the answer distribution.\n\nFix operator: [[op_add_cant_solve]].\n\nSee also: [[concept_ambiguity]]."
     },
+
     "concept_option_count": {
       "id": "concept_option_count",
       "title": "Option count",
       "summary": "How many answer options are presented; too many increases cognitive load and overlap risk.",
       "body": "As a rule of thumb, keep answer options ≤ 5 unless there is strong justification and clear separations.\n\nFix: [[op_scale_choice]] or split the task."
     },
+
     "concept_cognitive_load": {
       "id": "concept_cognitive_load",
       "title": "Cognitive load",
       "summary": "The mental effort required to answer: searching, reading, interpreting, comparing, etc.",
-      "body": "**Cognitive load** increases with:\n- many answer options\n- long instructions\n- complex UI interactions\n- unclear focus\n\nFixes include: [[op_add_overlays]], [[op_clip_trimming]], and simplification."
+      "body": "**Cognitive load** increases with:\n- many answer options\n- long instructions\n- complex UI interactions\n- unclear focus\n\nFixes include: [[op_add_overlays]], [[op_clip_trimming]], and simplification.\n\nSee also: [[concept_task_difficulty]]."
     },
+
     "primitive_ui_affordance": {
       "id": "primitive_ui_affordance",
       "title": "UI affordance",
       "summary": "UI features that help annotators answer quickly and consistently.",
-      "body": "A **UI affordance** is any design choice that reduces effort: overlays, zoom controls, frame scrubbing, highlights, etc.\n\nGood affordances reduce cognitive load and ambiguity.\n\nSee also: [[concept_cognitive_load]]."
+      "body": "A **UI affordance** is any design choice that reduces effort: overlays, zoom controls, frame scrubbing, highlights, etc.\n\nGood affordances reduce cognitive load and ambiguity.\n\nSee also: [[concept_cognitive_load]], [[concept_ambiguity_reduction]]."
     },
+
     "concept_pilot": {
       "id": "concept_pilot",
       "title": "Pilot",
       "summary": "A small trial run to validate agreement and detect ambiguity before scaling.",
-      "body": "A **Pilot** is a small annotation run (e.g., 100–200 samples) used to validate that a task yields sufficient agreement.\n\nIf pilot agreement is low, revise the task using fix operators.\n\nSee also: [[concept_agreement]], [[concept_fail_fast]]."
+      "body": "A **Pilot** is a small annotation run (e.g., 100–200 samples) used to validate that a task yields sufficient agreement.\n\nA pilot should also be used to quantify ambiguity and identify whether uncertainty is avoidable (design-induced) or irreducible.\n\nIf pilot agreement is low, revise the task using fix operators.\n\nSee also: [[concept_agreement]], [[concept_fail_fast]], [[concept_ambiguity]]."
     },
+
     "concept_agreement": {
       "id": "concept_agreement",
       "title": "Annotator agreement",
       "summary": "How consistently different annotators answer the same item under the task definition.",
-      "body": "**Agreement** can be measured via simple majority rates or statistics like kappa / Krippendorff’s alpha.\n\nHigh agreement is essential for routing nodes in trees.\n\nSee also: [[concept_routing_safety]]."
+      "body": "**Agreement** can be measured via simple majority rates or statistics like kappa / Krippendorff’s alpha.\n\nHigh agreement is essential for routing nodes in trees.\n\nLow agreement can be caused by avoidable ambiguity (fixable) or irreducible ambiguity (expected given the data).\n\nSee also: [[concept_routing_safety]], [[concept_ambiguity]]."
     },
+
     "concept_tree_dag": {
       "id": "concept_tree_dag",
       "title": "Tree/DAG of tasks",
       "summary": "A composition of tasks where answers can route to different follow-up questions.",
-      "body": "A **Tree/DAG** composes nano-tasks into a decision program. Routing introduces error propagation, so branching should use high-agreement questions.\n\nSee also: [[concept_routing_node]], [[concept_routing_safety]]."
+      "body": "A **Tree/DAG** composes nano-tasks into a decision program. Routing introduces error propagation, so branching should use high-agreement questions.\n\nIn current tooling (HARI), routing is typically based on majority vote. Therefore, task design should focus on making routing nodes low-ambiguity and conservative.\n\nSee also: [[concept_routing_node]], [[concept_routing_safety]], [[concept_ambiguity]]."
     },
+
     "concept_routing_node": {
       "id": "concept_routing_node",
       "title": "Routing node",
       "summary": "A task whose answer determines which next task is shown.",
-      "body": "A **Routing node** uses an answer (often majority vote) to determine the next node in a tree/DAG.\n\nRouting nodes must be more robust than leaf attribute questions.\n\nSee also: [[concept_routing_safety]], [[primitive_aggregation]]."
+      "body": "A **Routing node** uses an answer (often majority vote) to determine the next node in a tree/DAG.\n\nRouting nodes must be more robust than leaf attribute questions.\n\nBecause routing logic is constrained, reducing ambiguity at routing nodes is a primary lever.\n\nSee also: [[concept_routing_safety]], [[primitive_aggregation]], [[concept_ambiguity_reduction]]."
     },
+
     "concept_routing_safety": {
       "id": "concept_routing_safety",
       "title": "Routing safety",
       "summary": "Extra robustness requirements for tasks used for routing in a tree/DAG.",
-      "body": "**Routing safety** means:\n- High agreement thresholds\n- Clear fallback for uncertainty ([[concept_cant_solve]])\n- Possibly more repeats or stronger stop rules\n\nIf a question is naturally messy, avoid using it for routing."
+      "body": "**Routing safety** means:\n- High agreement thresholds\n- Clear fallback for uncertainty ([[concept_cant_solve]])\n- Possibly more repeats or stronger stop rules\n\nIf a question is naturally messy, avoid using it for routing.\n\nEven when routing is fixed to majority vote, routing safety can be improved by conservative thresholds, clearer focus, and stronger examples.\n\nSee also: [[concept_threshold]], [[op_design_routing_node]]."
     },
+
     "concept_repeats": {
       "id": "concept_repeats",
       "title": "Repeats",
       "summary": "Multiple independent annotations of the same item to estimate reliability.",
-      "body": "**Repeats** provide a distribution of answers and reduce noise via aggregation.\n\nSee also: [[primitive_aggregation]], [[concept_stop_rule]]."
+      "body": "**Repeats** provide a distribution of answers and reduce noise via aggregation.\n\nSee also: [[primitive_aggregation]], [[concept_stop_rule]], [[concept_ambiguity]]."
     },
+
     "concept_stop_rule": {
       "id": "concept_stop_rule",
       "title": "Stop rule",
       "summary": "A rule for when to stop collecting repeats (e.g., confidence reached).",
       "body": "A **Stop rule** ends repeat collection early when sufficient certainty is reached, reducing cost.\n\nCommon forms: fixed repeats; confidence-based stopping.\n\nSee also: [[concept_repeats]], [[primitive_aggregation]]."
     },
+
     "concept_fix_operator": {
       "id": "concept_fix_operator",
       "title": "Fix operator",
       "summary": "A standard transformation that improves a task to meet nano-task criteria.",
-      "body": "A **Fix operator** is a canonical change applied when a checklist item fails.\n\nExamples: [[op_and_split]], [[op_proxy_observable]], [[op_add_focus_spec]], [[op_define_concept]], [[op_add_cant_solve]], [[op_scale_choice]]."
+      "body": "A **Fix operator** is a canonical change applied when a checklist item fails.\n\nExamples: [[op_and_split]], [[op_proxy_observable]], [[op_add_focus_spec]], [[op_define_concept]], [[op_add_cant_solve]], [[op_scale_choice]], [[op_make_thresholds_explicit]], [[op_add_overlays]], [[op_clip_trimming]], [[op_add_anchor_examples]], [[op_add_counterexamples]], [[op_define_sampling_strategy]], [[op_add_task_metadata]], [[op_define_downstream_intent]], [[op_design_routing_node]]."
     },
 
     "op_and_split": {
@@ -163,55 +188,176 @@
       "summary": "Split a multi-part question into multiple single-aspect tasks.",
       "body": "Use **AND-Split** when a question contains multiple predicates.\n\nExample:\n- Bad: “Is there fog and is visibility limited?”\n- Good: Task 1: “Is there fog?” Task 2: “Is visibility limited?”\n\nRelated: [[concept_single_aspect]]."
     },
+
     "op_proxy_observable": {
       "id": "op_proxy_observable",
       "title": "Operator: Proxy-Observable",
       "summary": "Replace an inferred concept with a directly observable proxy.",
       "body": "Use **Proxy-Observable** when the predicate requires inference.\n\nExample:\n- Bad: “Is the vehicle braking?”\n- Good: “Are the brake lights on?”\n\nRelated: [[concept_observability]], [[concept_proxy_observable]]."
     },
+
     "op_add_focus_spec": {
       "id": "op_add_focus_spec",
       "title": "Operator: Add Focus Spec",
       "summary": "Add explicit reference to the target object/region/time window.",
       "body": "Use **Add Focus Spec** when multiple objects could be the target.\n\nMechanisms:\n- Marked object (bbox/mask)\n- Fixed region label\n- Time window definition\n\nRelated: [[primitive_focus_spec]], [[concept_reference_target]]."
     },
+
     "op_define_concept": {
       "id": "op_define_concept",
       "title": "Operator: Define Concept",
       "summary": "Add explicit definitions and examples for terms that could be interpreted differently.",
-      "body": "Use **Define Concept** for jargon or ambiguous terms.\n\nInclude:\n- concise definition\n- inclusion/exclusion boundaries\n- positive/negative examples\n\nRelated: [[concept_jargon]]."
+      "body": "Use **Define Concept** for jargon or ambiguous terms.\n\nInclude:\n- concise definition\n- inclusion/exclusion boundaries\n- positive/negative examples\n\nRelated: [[concept_jargon]], [[op_add_anchor_examples]], [[op_add_counterexamples]]."
     },
+
     "op_make_thresholds_explicit": {
       "id": "op_make_thresholds_explicit",
       "title": "Operator: Make Thresholds Explicit",
       "summary": "Turn vague qualifiers into explicit boundaries.",
-      "body": "Use **Make Thresholds Explicit** when options overlap (“some”, “a bit”).\n\nDefine boundaries in observable terms.\n\nRelated: [[concept_mutual_exclusivity]]."
+      "body": "Use **Make Thresholds Explicit** when options overlap (“some”, “a bit”).\n\nDefine boundaries in observable terms.\n\nRelated: [[concept_mutual_exclusivity]], [[concept_threshold]]."
     },
+
     "op_add_cant_solve": {
       "id": "op_add_cant_solve",
       "title": "Operator: Add Can't-Solve",
       "summary": "Add a controlled fallback option for unanswerable or ambiguous cases.",
-      "body": "Use **Add Can't-Solve** to prevent forced guessing and to quantify uncertainty.\n\nRelated: [[concept_cant_solve]], [[concept_exhaustiveness]]."
+      "body": "Use **Add Can't-Solve** to prevent forced guessing and to quantify uncertainty.\n\nRelated: [[concept_cant_solve]], [[concept_exhaustiveness]], [[concept_ambiguity]]."
     },
+
     "op_scale_choice": {
       "id": "op_scale_choice",
       "title": "Operator: Scale Choice",
       "summary": "Choose a simpler scale or reduce categories to minimize ambiguity and load.",
       "body": "Use **Scale Choice** when the answer schema has too many or poorly separated options.\n\nOften 3–5 levels are sufficient.\n\nRelated: [[concept_option_count]], [[primitive_answer_schema]]."
     },
+
     "op_add_overlays": {
       "id": "op_add_overlays",
       "title": "Operator: Add Overlays",
       "summary": "Add UI overlays to reduce searching and clarify focus.",
       "body": "Use **Add Overlays** when the stimulus is visually complex.\n\nExamples: bounding boxes, highlights, arrows, frame markers.\n\nRelated: [[primitive_ui_affordance]], [[concept_cognitive_load]]."
     },
+
     "op_clip_trimming": {
       "id": "op_clip_trimming",
       "title": "Operator: Clip Trimming",
       "summary": "Shorten or focus the video segment to the relevant time window.",
       "body": "Use **Clip Trimming** when relevant evidence occurs only in a small time window.\n\nRelated: [[primitive_focus_spec]], [[concept_cognitive_load]]."
+    },
+
+    "concept_ambiguity": {
+      "id": "concept_ambiguity",
+      "title": "Ambiguity",
+      "summary": "Uncertainty captured in the answer distribution and explicit can't-solve signals.",
+      "body": "**Ambiguity** is uncertainty in annotation outcomes.\n\nIn your setting, ambiguity is typically quantified using derived measures that combine:\n- Entropy of the answer distribution across repeats\n- Frequency of the [[concept_cant_solve]] option\n\nPractical implication: Every annotation task carries some ambiguity. Nano-task design aims to reduce **avoidable ambiguity** while acknowledging a residual, irreducible component that reflects aleatoric uncertainty in the data.\n\nSee also: [[concept_ambiguity_reduction]], [[concept_agreement]], [[concept_pilot]]."
+    },
+
+    "concept_ambiguity_reduction": {
+      "id": "concept_ambiguity_reduction",
+      "title": "Ambiguity reduction",
+      "summary": "Design strategies to minimize avoidable ambiguity in nano-tasks.",
+      "body": "**Ambiguity reduction** focuses on uncertainty caused by task design rather than by the data itself.\n\nCommon strategies include:\n- Improve observability ([[concept_observability]])\n- Add a precise focus spec ([[primitive_focus_spec]])\n- Make thresholds explicit ([[concept_threshold]])\n- Reduce overlap in answer schema ([[concept_mutual_exclusivity]])\n- Add anchor examples and counterexamples ([[op_add_anchor_examples]], [[op_add_counterexamples]])\n\nAfter applying these, remaining ambiguity is treated as irreducible and should be measured.\n\nSee also: [[concept_ambiguity]]."
+    },
+
+    "concept_threshold": {
+      "id": "concept_threshold",
+      "title": "Operational threshold",
+      "summary": "An explicit boundary between answer categories grounded in observable proxies.",
+      "body": "An **operational threshold** defines the boundary between categories in observable terms.\n\nThresholds are required when predicates involve degree or intensity (dense fog, severe glare, heavy rain).\n\nGood thresholds:\n- Use observable proxies\n- Are supported by anchor examples and counterexamples\n- Reduce overlap between options\n\nFix operator: [[op_make_thresholds_explicit]].\n\nSee also: [[op_add_anchor_examples]], [[op_add_counterexamples]]."
+    },
+
+    "concept_task_difficulty": {
+      "id": "concept_task_difficulty",
+      "title": "Task difficulty",
+      "summary": "The inherent difficulty of a task even when it is well specified.",
+      "body": "**Task difficulty** describes how hard a nano-task is for annotators despite good design.\n\nDifficulty depends on:\n- Visual complexity of the stimulus\n- Subtlety of the predicate\n- Prevalence of borderline cases\n- UI friction\n\nHigh difficulty often increases ambiguity and may require more repeats or a different predicate.\n\nSee also: [[concept_cognitive_load]], [[concept_ambiguity]]."
+    },
+
+    "concept_coverage": {
+      "id": "concept_coverage",
+      "title": "Coverage",
+      "summary": "Whether the dataset sample represents all relevant cases for the intended question.",
+      "body": "**Coverage** is the extent to which the annotated sample spans the relevant case space.\n\nCoverage considerations:\n- Rare but important cases\n- Negative controls\n- Environmental variation (weather, lighting, viewpoint)\n- Edge cases and counterexamples\n\nPoor coverage can invalidate conclusions even if task design is strong.\n\nSee also: [[concept_sampling_strategy]], [[concept_downstream_intent]]."
+    },
+
+    "concept_sampling_strategy": {
+      "id": "concept_sampling_strategy",
+      "title": "Sampling strategy",
+      "summary": "How data points are selected for annotation to achieve coverage.",
+      "body": "A **sampling strategy** defines how items are selected for annotation.\n\nCommon strategies:\n- Random sampling\n- Stratified sampling\n- Targeted sampling for rare conditions\n- Minimal-pair or counterfactual sampling\n\nFix operator: [[op_define_sampling_strategy]].\n\nSee also: [[concept_coverage]]."
+    },
+
+    "concept_task_governance": {
+      "id": "concept_task_governance",
+      "title": "Task governance",
+      "summary": "Processes and rules for maintaining, updating, and retiring tasks.",
+      "body": "**Task governance** ensures task definitions remain consistent and traceable over time.\n\nGovernance includes:\n- Ownership\n- Change rationale\n- Deprecation policy\n- Versioning\n\nFix operator: [[op_add_task_metadata]].\n\nSee also: [[concept_task_versioning]]."
+    },
+
+    "concept_task_versioning": {
+      "id": "concept_task_versioning",
+      "title": "Task versioning",
+      "summary": "Explicit tracking of task definition changes over time.",
+      "body": "**Task versioning** records changes to definitions, thresholds, answer schemas, or instructions.\n\nHistorical labels must be interpreted in the context of the task version used.\n\nFix operator: [[op_add_task_metadata]].\n\nSee also: [[concept_task_governance]]."
+    },
+
+    "concept_downstream_intent": {
+      "id": "concept_downstream_intent",
+      "title": "Downstream intent",
+      "summary": "The purpose for which the task output is used.",
+      "body": "**Downstream intent** defines why the task exists.\n\nExamples:\n- Model evaluation\n- Dataset filtering\n- Safety analysis\n- Error analysis\n\nIntent influences acceptable ambiguity, threshold placement, and whether a routing structure is appropriate.\n\nFix operator: [[op_define_downstream_intent]].\n\nSee also: [[concept_cost_of_error]]."
+    },
+
+    "concept_cost_of_error": {
+      "id": "concept_cost_of_error",
+      "title": "Cost of error",
+      "summary": "The relative impact of false positives and false negatives for the downstream intent.",
+      "body": "**Cost of error** describes the consequences of different mistake types.\n\nIf the cost is asymmetric, it should influence:\n- Threshold placement\n- Conservative versus permissive labeling\n- Handling of can't-solve and ambiguity\n\nSee also: [[concept_downstream_intent]], [[concept_threshold]]."
+    },
+
+    "op_add_anchor_examples": {
+      "id": "op_add_anchor_examples",
+      "title": "Operator: Add Anchor Examples",
+      "summary": "Add canonical positive examples that define what counts as the condition.",
+      "body": "Use **Add Anchor Examples** when annotators need calibration.\n\nAnchors should be:\n- Minimal and representative\n- Clearly labeled with why they qualify\n- Aligned with thresholds if present\n\nRelated: [[concept_threshold]], [[concept_ambiguity_reduction]]."
+    },
+
+    "op_add_counterexamples": {
+      "id": "op_add_counterexamples",
+      "title": "Operator: Add Counterexamples",
+      "summary": "Add negative examples that clarify boundaries and prevent false positives.",
+      "body": "Use **Add Counterexamples** when the condition is often confused with similar phenomena.\n\nCounterexamples should:\n- Look deceptively similar\n- Explain why they do not qualify\n- Pair naturally with anchors\n\nRelated: [[concept_mutual_exclusivity]], [[concept_threshold]]."
+    },
+
+    "op_define_sampling_strategy": {
+      "id": "op_define_sampling_strategy",
+      "title": "Operator: Define Sampling Strategy",
+      "summary": "Document and adjust the sampling plan to improve coverage and interpretability.",
+      "body": "Use **Define Sampling Strategy** when coverage is assumed rather than designed.\n\nInclude:\n- What strata matter\n- How rare cases are included\n- How negatives are included\n\nRelated: [[concept_sampling_strategy]], [[concept_coverage]]."
+    },
+
+    "op_add_task_metadata": {
+      "id": "op_add_task_metadata",
+      "title": "Operator: Add Task Metadata",
+      "summary": "Add ownership, versioning, and change rationale to keep tasks traceable over time.",
+      "body": "Use **Add Task Metadata** to improve governance.\n\nInclude:\n- Owner\n- Version identifier\n- Change log\n- Deprecation plan (if applicable)\n\nRelated: [[concept_task_governance]], [[concept_task_versioning]]."
+    },
+
+    "op_define_downstream_intent": {
+      "id": "op_define_downstream_intent",
+      "title": "Operator: Define Downstream Intent",
+      "summary": "Make the task purpose explicit and link it to design decisions.",
+      "body": "Use **Define Downstream Intent** when it is unclear why the task exists.\n\nInclude:\n- Primary use case\n- Who consumes the output\n- Desired error trade-offs\n\nRelated: [[concept_downstream_intent]], [[concept_cost_of_error]]."
+    },
+
+    "op_design_routing_node": {
+      "id": "op_design_routing_node",
+      "title": "Operator: Design Routing Node Conservatively",
+      "summary": "Design a routing node to minimize expected ambiguity given majority-vote routing constraints.",
+      "body": "Use **Design Routing Node Conservatively** when a node controls branching and routing is based on majority vote.\n\nLevers available even under majority vote:\n- Choose a coarse, high-agreement predicate\n- Add explicit thresholds and examples\n- Add can't-solve and define when it applies\n- Increase repeats or tighten stop rules\n- Move subjective predicates to leaves\n\nRelated: [[concept_routing_safety]], [[concept_ambiguity_reduction]]."
     }
   },
+
   "checklist": [
     {
       "id": "c1_single_aspect",
@@ -226,12 +372,19 @@
         "bad": "“Is there dense fog and does it limit visibility?”",
         "good": "Task 1: “Is there dense fog?” Task 2: “Is visibility limited?”"
       },
-      "wiki_terms": ["concept_single_aspect", "primitive_predicate", "op_and_split"],
+      "wiki_terms": [
+        "concept_single_aspect",
+        "primitive_predicate",
+        "op_and_split"
+      ],
       "fail_if": [
         "More than one predicate is required to answer the question."
       ],
       "fixes": [
-        { "operator": "op_and_split", "instruction": "Split into multiple tasks, one predicate each." }
+        {
+          "operator": "op_and_split",
+          "instruction": "Split into multiple tasks, one predicate each."
+        }
       ]
     },
     {
@@ -247,12 +400,20 @@
         "bad": "“Is the driver trying to overtake?”",
         "good": "“Is the vehicle moving into the adjacent lane?”"
       },
-      "wiki_terms": ["concept_observability", "concept_proxy_observable", "op_proxy_observable", "primitive_stimulus"],
+      "wiki_terms": [
+        "concept_observability",
+        "concept_proxy_observable",
+        "op_proxy_observable",
+        "primitive_stimulus"
+      ],
       "fail_if": [
         "Answer requires intent/purpose inference or outside knowledge."
       ],
       "fixes": [
-        { "operator": "op_proxy_observable", "instruction": "Rewrite the predicate using an observable proxy feature." }
+        {
+          "operator": "op_proxy_observable",
+          "instruction": "Rewrite the predicate using an observable proxy feature."
+        }
       ]
     },
     {
@@ -268,12 +429,19 @@
         "bad": "“Is the pedestrian occluded?” (in a crowded scene)",
         "good": "“Is the marked pedestrian occluded?”"
       },
-      "wiki_terms": ["primitive_focus_spec", "concept_reference_target", "op_add_focus_spec"],
+      "wiki_terms": [
+        "primitive_focus_spec",
+        "concept_reference_target",
+        "op_add_focus_spec"
+      ],
       "fail_if": [
         "Multiple plausible targets exist without explicit focus specification."
       ],
       "fixes": [
-        { "operator": "op_add_focus_spec", "instruction": "Add a Focus Spec (marked object/region/time window) or rewrite for whole-scene focus." }
+        {
+          "operator": "op_add_focus_spec",
+          "instruction": "Add a Focus Spec (marked object/region/time window) or rewrite for whole-scene focus."
+        }
       ]
     },
     {
@@ -289,12 +457,28 @@
         "bad": "“Is the pedestrian jaywalking?”",
         "good": "“Is the marked person crossing the road outside a crosswalk?”"
       },
-      "wiki_terms": ["concept_jargon", "op_define_concept"],
+      "wiki_terms": [
+        "concept_jargon",
+        "op_define_concept",
+        "op_add_anchor_examples",
+        "op_add_counterexamples"
+      ],
       "fail_if": [
         "The question relies on jargon or undefined terms."
       ],
       "fixes": [
-        { "operator": "op_define_concept", "instruction": "Add Concept definitions + inclusion/exclusion boundaries + examples." }
+        {
+          "operator": "op_define_concept",
+          "instruction": "Add Concept definitions plus inclusion/exclusion boundaries plus examples."
+        },
+        {
+          "operator": "op_add_anchor_examples",
+          "instruction": "Add canonical positive examples to calibrate interpretation."
+        },
+        {
+          "operator": "op_add_counterexamples",
+          "instruction": "Add near-miss negatives that clarify boundaries."
+        }
       ]
     },
     {
@@ -310,13 +494,26 @@
         "bad": "Options: “Slight fog”, “Some fog”, “Foggy” (overlap)",
         "good": "Options: “Yes”, “No”, “Not sure / Can’t solve”"
       },
-      "wiki_terms": ["concept_mutual_exclusivity", "concept_exhaustiveness", "concept_cant_solve", "op_make_thresholds_explicit", "op_add_cant_solve"],
+      "wiki_terms": [
+        "concept_mutual_exclusivity",
+        "concept_exhaustiveness",
+        "concept_cant_solve",
+        "op_make_thresholds_explicit",
+        "op_add_cant_solve",
+        "concept_threshold"
+      ],
       "fail_if": [
         "Options overlap or leave common edge cases uncovered."
       ],
       "fixes": [
-        { "operator": "op_make_thresholds_explicit", "instruction": "Define boundaries in observable terms to eliminate overlap." },
-        { "operator": "op_add_cant_solve", "instruction": "Add a controlled “Not sure / Can’t solve” fallback with definition." }
+        {
+          "operator": "op_make_thresholds_explicit",
+          "instruction": "Define boundaries in observable terms to eliminate overlap."
+        },
+        {
+          "operator": "op_add_cant_solve",
+          "instruction": "Add a controlled “Not sure / Can’t solve” fallback with definition."
+        }
       ]
     },
     {
@@ -332,12 +529,19 @@
         "bad": "12 fine-grained categories without clear thresholds",
         "good": "3–5 levels with crisp definitions and examples"
       },
-      "wiki_terms": ["concept_option_count", "concept_cognitive_load", "op_scale_choice"],
+      "wiki_terms": [
+        "concept_option_count",
+        "concept_cognitive_load",
+        "op_scale_choice"
+      ],
       "fail_if": [
         "Too many options without strong separation and examples."
       ],
       "fixes": [
-        { "operator": "op_scale_choice", "instruction": "Reduce to 3–5 levels or split into a coarse+refine approach (with caution)." }
+        {
+          "operator": "op_scale_choice",
+          "instruction": "Reduce to 3–5 levels or split into a coarse+refine approach (with caution)."
+        }
       ]
     },
     {
@@ -353,13 +557,24 @@
         "bad": "Evidence appears for 2 frames in a 20s clip without markers",
         "good": "Clip trimmed; overlays highlight the relevant object/time window"
       },
-      "wiki_terms": ["concept_cognitive_load", "primitive_ui_affordance", "op_add_overlays", "op_clip_trimming"],
+      "wiki_terms": [
+        "concept_cognitive_load",
+        "primitive_ui_affordance",
+        "op_add_overlays",
+        "op_clip_trimming"
+      ],
       "fail_if": [
         "Answer requires substantial searching or complex UI operations."
       ],
       "fixes": [
-        { "operator": "op_add_overlays", "instruction": "Add overlays/highlights to guide attention." },
-        { "operator": "op_clip_trimming", "instruction": "Trim the clip or specify a time window where evidence occurs." }
+        {
+          "operator": "op_add_overlays",
+          "instruction": "Add overlays/highlights to guide attention."
+        },
+        {
+          "operator": "op_clip_trimming",
+          "instruction": "Trim the clip or specify a time window where evidence occurs."
+        }
       ]
     },
     {
@@ -375,12 +590,21 @@
         "bad": "No pilot; launch immediately at scale",
         "good": "Pilot with agreement threshold; revise if below target"
       },
-      "wiki_terms": ["concept_pilot", "concept_agreement", "primitive_aggregation", "concept_repeats"],
+      "wiki_terms": [
+        "concept_pilot",
+        "concept_agreement",
+        "primitive_aggregation",
+        "concept_repeats",
+        "concept_ambiguity"
+      ],
       "fail_if": [
         "No pilot or no explicit agreement criteria."
       ],
       "fixes": [
-        { "operator": "concept_pilot", "instruction": "Define pilot size, repeats, metric, and acceptance threshold." }
+        {
+          "operator": "concept_pilot",
+          "instruction": "Define pilot size, repeats, metric, and acceptance threshold."
+        }
       ]
     },
     {
@@ -396,12 +620,196 @@
         "bad": "A naturally subjective question routes early in the tree",
         "good": "Only high-agreement coarse gates route; messy judgments become leaves"
       },
-      "wiki_terms": ["concept_tree_dag", "concept_routing_node", "concept_routing_safety", "concept_cant_solve", "primitive_aggregation"],
+      "wiki_terms": [
+        "concept_tree_dag",
+        "concept_routing_node",
+        "concept_routing_safety",
+        "concept_cant_solve",
+        "primitive_aggregation",
+        "concept_ambiguity",
+        "op_design_routing_node"
+      ],
       "fail_if": [
         "A low-robustness task is used for routing without uncertainty handling."
       ],
       "fixes": [
-        { "operator": "concept_routing_safety", "instruction": "Move to leaf/attribute, delay branching, add 'Not sure' branch, or increase repeats/stop robustness." }
+        {
+          "operator": "op_design_routing_node",
+          "instruction": "Choose a coarse high-agreement predicate, add thresholds and examples, define can't-solve usage, or move subjective predicates to leaves."
+        }
+      ]
+    },
+    {
+      "id": "c10_ambiguity_awareness",
+      "title": "Ambiguity is understood and acceptable",
+      "what": "Is the expected level of ambiguity understood and acceptable for this task given its downstream intent?",
+      "why": "Some ambiguity is irreducible and must be measured rather than treated as a pure failure signal.",
+      "how_to_check": [
+        "Are likely ambiguity sources identified (borderline cases, weak evidence, overlap)?",
+        "Is the can't-solve policy defined and used consistently?",
+        "Is the remaining ambiguity acceptable for the purpose of this task?"
+      ],
+      "examples": {
+        "bad": "High disagreement is observed but treated as annotator error only",
+        "good": "Avoidable ambiguity is reduced; remaining ambiguity is measured and interpreted explicitly"
+      },
+      "wiki_terms": [
+        "concept_ambiguity",
+        "concept_ambiguity_reduction",
+        "concept_downstream_intent",
+        "concept_cant_solve"
+      ],
+      "fail_if": [
+        "Ambiguity is high due to avoidable design issues.",
+        "Ambiguity is unacceptable for the stated downstream intent."
+      ],
+      "fixes": [
+        {
+          "operator": "concept_ambiguity_reduction",
+          "instruction": "Apply ambiguity reduction strategies (focus, thresholds, examples, schema simplification)."
+        },
+        {
+          "operator": "op_define_downstream_intent",
+          "instruction": "Make the purpose explicit and align ambiguity tolerance with error costs."
+        }
+      ]
+    },
+    {
+      "id": "c11_threshold_defined",
+      "title": "Operational thresholds are defined",
+      "what": "Are boundaries between answer categories explicitly defined in observable terms?",
+      "why": "Implicit thresholds cause systematic disagreement and inflate ambiguity.",
+      "how_to_check": [
+        "Does the predicate include degree words (dense, heavy, severe, limited)?",
+        "Would two annotators agree on the boundary without extra instruction?",
+        "Are anchor examples and counterexamples provided near the boundary?"
+      ],
+      "examples": {
+        "bad": "“Dense fog” without operational definition",
+        "good": "Threshold defined via observable proxy plus anchors and near-miss counterexamples"
+      },
+      "wiki_terms": [
+        "concept_threshold",
+        "op_make_thresholds_explicit",
+        "op_add_anchor_examples",
+        "op_add_counterexamples"
+      ],
+      "fail_if": [
+        "Category boundaries are implicit or vague."
+      ],
+      "fixes": [
+        {
+          "operator": "op_make_thresholds_explicit",
+          "instruction": "Define boundaries using observable proxies and crisp rules."
+        },
+        {
+          "operator": "op_add_anchor_examples",
+          "instruction": "Add positive anchors to calibrate the threshold."
+        },
+        {
+          "operator": "op_add_counterexamples",
+          "instruction": "Add near-miss negatives to prevent overlap and false positives."
+        }
+      ]
+    },
+    {
+      "id": "c12_coverage_considered",
+      "title": "Coverage and sampling are considered",
+      "what": "Is there an explicit sampling strategy that supports coverage for the intended use?",
+      "why": "A strong task on a weak sample produces misleading conclusions.",
+      "how_to_check": [
+        "Are rare but important cases included?",
+        "Are negative controls included?",
+        "Is the sampling strategy documented and justified?"
+      ],
+      "examples": {
+        "bad": "Only easy positives are sampled; negatives are missing",
+        "good": "Sampling includes strata, negatives, and edge cases aligned with the task purpose"
+      },
+      "wiki_terms": [
+        "concept_coverage",
+        "concept_sampling_strategy",
+        "op_define_sampling_strategy",
+        "concept_downstream_intent"
+      ],
+      "fail_if": [
+        "Coverage is assumed but not designed."
+      ],
+      "fixes": [
+        {
+          "operator": "op_define_sampling_strategy",
+          "instruction": "Document strata, include negatives and rare cases, and justify coverage for the intent."
+        }
+      ]
+    },
+    {
+      "id": "c13_task_difficulty",
+      "title": "Task difficulty is acceptable or mitigated",
+      "what": "Is the inherent difficulty low enough for a nano-task, or has it been mitigated?",
+      "why": "Some tasks remain difficult even when correctly designed, which increases ambiguity and cost.",
+      "how_to_check": [
+        "Is the evidence subtle, small, fleeting, or often occluded?",
+        "Does the task rely on borderline cases frequently?",
+        "Are UI affordances sufficient to reduce effort?"
+      ],
+      "examples": {
+        "bad": "Tiny cues in long clips without UI support",
+        "good": "Difficulty reduced via trimming and overlays; borderline handling defined"
+      },
+      "wiki_terms": [
+        "concept_task_difficulty",
+        "concept_cognitive_load",
+        "op_add_overlays",
+        "op_clip_trimming"
+      ],
+      "fail_if": [
+        "The task is inherently high difficulty without mitigation."
+      ],
+      "fixes": [
+        {
+          "operator": "op_add_overlays",
+          "instruction": "Add UI affordances to reduce search and perceptual difficulty."
+        },
+        {
+          "operator": "op_clip_trimming",
+          "instruction": "Trim to the relevant time window to reduce effort."
+        }
+      ]
+    },
+    {
+      "id": "c14_governance_and_intent",
+      "title": "Governance and intent are defined",
+      "what": "Are downstream intent, error costs, and task governance defined so results remain interpretable over time?",
+      "why": "Without intent and governance, task changes and interpretations become inconsistent.",
+      "how_to_check": [
+        "Is the downstream intent documented?",
+        "Are error costs considered (false positives vs false negatives)?",
+        "Is ownership and versioning defined?"
+      ],
+      "examples": {
+        "bad": "Task definition changes silently; historical labels become unclear",
+        "good": "Versioned task with ownership, rationale, and intended use documented"
+      },
+      "wiki_terms": [
+        "concept_downstream_intent",
+        "concept_cost_of_error",
+        "concept_task_governance",
+        "concept_task_versioning",
+        "op_define_downstream_intent",
+        "op_add_task_metadata"
+      ],
+      "fail_if": [
+        "Task intent is undefined or governance is missing."
+      ],
+      "fixes": [
+        {
+          "operator": "op_define_downstream_intent",
+          "instruction": "Specify primary use case, consumer, and acceptable ambiguity and error trade-offs."
+        },
+        {
+          "operator": "op_add_task_metadata",
+          "instruction": "Add owner, version, change log, and deprecation plan."
+        }
       ]
     }
   ]
